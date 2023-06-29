@@ -13,6 +13,8 @@ import DefaultNavbar from "./components/Navbar";
 import HomePage from "./pages/Home";
 import AdminPage from "./pages/Admin";
 import ManagerPage from "./pages/Manager";
+import AboutPage from "./pages/About";
+import UnauthorizedPage from './pages/Unauthorized'
 import { AuthLayout } from "./auth/AuthLayout";
 import { DefaultAlert } from "./components/Alert";
 import { history } from "./helpers";
@@ -59,7 +61,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
             </Route>
 
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/about" element={<AboutPage/>}/>
+            <Route path="*" element={< UnauthorizedPage/>} />
           </Routes>
         </div>
         <DefaultFooter />

@@ -49,7 +49,7 @@ const AppointmentList = ({ refreshList }) => {
         }
       };
       fetchAppointments();
-    }, [dispatch, date, refreshList]);
+    }, [dispatch,date, refreshList]);
   };
 
   useFetchAppointments(selecteDate);
