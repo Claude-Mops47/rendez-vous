@@ -40,7 +40,7 @@ function App() {
       <Flowbite>
         <DefaultNavbar />
         <DefaultAlert />
-        <div className="flex-grow">
+        <div className="">
           <Routes>
             <Route exact path="auth/*" element={<AuthLayout />} />
            

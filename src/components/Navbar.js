@@ -11,7 +11,6 @@ export default function DefaultNavbar() {
   // const
   if (!auth) return null;
   const role = auth?.role;
-  console.log(role);
 
   return (
     <Navbar fluid rounded>

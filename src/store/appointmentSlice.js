@@ -46,10 +46,10 @@ function createExtraActions() {
 
     getAppointmentByUser: createAsyncThunk(
       `${name}/getAppointmentByUser`,
-      async (id, { dispatch }) => {
+      async ({id, dateBlock, page, limit}, { dispatch }) => {
         dispatch(alertActions.clear());
         try {
-          const response = await apiService.get(`${baseUrl}/user/${id}`);
+          const response = await apiService.get(`${baseUrl}/user/${id}?date=${dateBlock}&page=${page}&limit=${limit}`);
           return response.data;
         } catch (error) {
           dispatch(alertActions.error(error.message));
