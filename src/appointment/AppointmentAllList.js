@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { appointmentsActions } from "../store";
 import { Button, Spinner, Table, TextInput } from "flowbite-react";
+import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
 const AppointmentAllList = () => {
@@ -19,43 +20,20 @@ const AppointmentAllList = () => {
 
   const downloadRef = useRef(null);
   const appointments = useSelector((state) => state.appointments?.lists) || [];
- 
+
   const handleDateChange = (e) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
   };
-  
-  // const useFetchAppointments = (date) => {
-  //   const dispatch = useDispatch();
-  //   const page = 1;
-  //   const limit = 30;
-  
-  //   useEffect(() => {
-  //     const fetchAppointments = async () => {
-  //       if (date !== "") {
-  //         await dispatch(
-  //           appointmentsActions.getAllAppointments({
-  //             dateBlock: date,
-  //             page: page,
-  //             limit: limit,
-  //           })
-  //         );
-  //       }
-  //     };
-  //     fetchAppointments();
-  //   }, [dispatch, date]);
-  // };
-  
-  // useFetchAppointments(selecteDate);
 
   const useFetchAppointments = (date) => {
     const dispatch = useDispatch();
     const page = 1;
     const limit = 30;
-  
+
     useEffect(() => {
       let isFetching = false;
-  
+
       const fetchAppointments = async () => {
         if (date !== "") {
           isFetching = true;
@@ -69,11 +47,11 @@ const AppointmentAllList = () => {
           isFetching = false;
         }
       };
-  
+
       if (date !== "") {
         fetchAppointments();
       }
-  
+
       return () => {
         if (isFetching) {
           // dispatch(appointmentsActions.cancelAllPendingAppointmentsRequests());
@@ -81,9 +59,8 @@ const AppointmentAllList = () => {
       };
     }, [dispatch, date]);
   };
-  
+
   useFetchAppointments(selecteDate);
-  
 
   const handleAgentFilterChange = (e) => {
     setFilterAgent(e.target.value);
@@ -100,7 +77,6 @@ const AppointmentAllList = () => {
     }
     return true;
   });
-
 
   const downloadAsCSV = () => {
     const csvContent = [
@@ -119,17 +95,16 @@ const AppointmentAllList = () => {
         ].join("$");
       }),
     ].join("\n");
-  
+
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  
+
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
     link.download = `${selecteDate}-appointments.csv`;
     link.click();
-  
+
     return blob;
   };
-  
 
   return (
     <>
@@ -144,7 +119,7 @@ const AppointmentAllList = () => {
 
           <Button
             type="button"
-            size='xs'
+            size="xs"
             color="light"
             ref={downloadRef}
             onClick={downloadAsCSV}
@@ -192,72 +167,68 @@ const AppointmentAllList = () => {
             </Table.HeadCell>
           </Table.Head>
 
-          <Table.Body className="divide-y"  >
-            {filteredAppointments?.sort((a,b)=> new Date(b.createdAt)- new Date(a.createdAt))
-            .map((appointment, index) => (
-              <Table.Row 
-                key={appointment.id}
-                className="bg-white text-xs dark:border-gray-700 dark:bg-gray-800"
-              >
-                <Table.Cell>{index + 1}</Table.Cell>
-                <Table.Cell
-                  style={{ whiteSpace: "nowrap", maxWidth: "2px" }}
-                  className="whitespace-no-wrap front-medium text-gray-900 dark:text-white"
+          <Table.Body className="divide-y">
+            {filteredAppointments
+              ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((appointment, index) => (
+                <Table.Row
+                  key={appointment.id}
+                  className="bg-white text-xs dark:border-gray-700 dark:bg-gray-800"
                 >
-                  {appointment.posted_by?.firstName}
-                </Table.Cell>
-
-                <Table.Cell style={{ whiteSpace: "nowrap", maxWidth: "2px" }}>
-                  {dayjs(appointment.createdAt).format("DD/MM")}
-                </Table.Cell>
-                <Table.Cell
-                  className="whitespace-no-wrap front-medium text-gray-900 dark:text-white px-3 py-3 sm:px-4 overflow-auto"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  {appointment.name.toUpperCase()}
-                </Table.Cell>
-                <Table.Cell
-                  className="px-3 py-3 sm:px-4 overflow-auto"
-                  style={{ whiteSpace: "nowrap", maxWidth: "120px" }}
-                >
-                  {appointment.phone.join(" / ").toLocaleString("fr-FR")}
-                </Table.Cell>
-                <Table.Cell
-                  className="px-3 py-3 sm:px-6  overflow-auto"
-                  style={{ whiteSpace: "nowrap", maxWidth: "120px" }}
-                >
-                  {appointment.address.toLowerCase()}
-                </Table.Cell>
-                <Table.Cell>
-                  {dayjs(appointment.date).format("DD/MM/YY, HH:mm")}
-                </Table.Cell>
-                <Table.Cell
-                  className="px-3 py-3 sm:px-6  overflow-auto"
-                  style={{ whiteSpace: "nowrap", maxWidth: "100px" }}
-                >
-                  {appointment.commercial}
-                </Table.Cell>
-                <Table.Cell>
-                  <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                    <span
-                      aria-hidden
-                      className="absolute text-xs inset-0 bg-green-200 opacity-50 rounded-full"
-                    ></span>
-                    <span className="relative text-xs">
-                      {appointment.status}
-                    </span>
-                  </span>
-                </Table.Cell>
-                <Table.Cell>
-                  <a
-                    className="fornt-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                    href={`./edit/${appointment._id}`}
+                  <Table.Cell>{index + 1}</Table.Cell>
+                  <Table.Cell
+                    style={{ whiteSpace: "nowrap", maxWidth: "2px" }}
+                    className="whitespace-no-wrap front-medium text-gray-900 dark:text-white"
                   >
-                    <p>Edit</p>
-                  </a>
-                </Table.Cell>
-              </Table.Row>
-            ))}
+                    {appointment.posted_by?.firstName}
+                  </Table.Cell>
+
+                  <Table.Cell style={{ whiteSpace: "nowrap", maxWidth: "2px" }}>
+                    {dayjs(appointment.createdAt).format("DD/MM")}
+                  </Table.Cell>
+                  <Table.Cell
+                    className="whitespace-no-wrap front-medium text-gray-900 dark:text-white px-3 py-3 sm:px-4 overflow-auto"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    {appointment.name.toUpperCase()}
+                  </Table.Cell>
+                  <Table.Cell
+                    className="px-3 py-3 sm:px-4 overflow-auto"
+                    style={{ whiteSpace: "nowrap", maxWidth: "120px" }}
+                  >
+                    {appointment.phone.join(" / ").toLocaleString("fr-FR")}
+                  </Table.Cell>
+                  <Table.Cell
+                    className="px-3 py-3 sm:px-6  overflow-auto"
+                    style={{ whiteSpace: "nowrap", maxWidth: "120px" }}
+                  >
+                    {appointment.address.toLowerCase()}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {dayjs(appointment.date).format("DD/MM/YY, HH:mm")}
+                  </Table.Cell>
+                  <Table.Cell
+                    className="px-3 py-3 sm:px-6  overflow-auto"
+                    style={{ whiteSpace: "nowrap", maxWidth: "100px" }}
+                  >
+                    {appointment.commercial}
+                  </Table.Cell>
+                  <Table.Cell>
+                    <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                      <span
+                        aria-hidden
+                        className="absolute text-xs inset-0 bg-green-200 opacity-50 rounded-full"
+                      ></span>
+                      <span className="relative text-xs">
+                        {appointment.status}
+                      </span>
+                    </span>
+                  </Table.Cell>
+                  <Table.Cell className="fornt-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                    <Link to={`../appointments/edit/${appointment._id}`}>Edit</Link>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
           </Table.Body>
         </Table>
         {appointments?.loading && (

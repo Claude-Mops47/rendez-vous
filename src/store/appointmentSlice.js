@@ -107,60 +107,6 @@ function createExtraActions() {
   };
 }
 
-// function createExtraReducers() {
-//   return (builder) => {
-//     builder
-
-//       .addCase(extraActions.getAllAppointments.pending, (state) => {
-//         state.lists.loading =true;
-//       })
-//       .addCase(extraActions.getAllAppointments.fulfilled, (state, action) => {
-//         state.lists = { value: action.payload, loading: false };
-
-//         // state.lists.value = action.payload, 
-//         // state.lists.loading = false 
-//       })
-//       .addCase(extraActions.getAllAppointments.rejected, (state) => {
-//         // state.lists = { error: action.error, loading: false };
-
-//         // state.lists.error = action.error;
-//         // state.lists.loading= false ;
-//       })
-
-//       .addCase(extraActions.getAppointmentByUser.pending, (state) => {
-//         state.list = { ...state.list, loading: true };
-//       })
-//       .addCase(extraActions.getAppointmentByUser.fulfilled, (state, action) => {
-//         state.list = { value: action.payload, loading: false };
-//       })
-//       .addCase(extraActions.getAppointmentByUser.rejected, (state, action) => {
-//         state.list = { error: action.error, loading: false };
-//       })
-
-//       .addCase(extraActions.updateAppointment.pending, (state) => {
-//         state.item = { ...state.item, loading: true };
-//       })
-//       .addCase(extraActions.updateAppointment.fulfilled, (state, action) => {
-//         state.item = { value: action.payload, loading: false };
-//       })
-//       .addCase(extraActions.updateAppointment.rejected, (state, action) => {
-//         state.item = { error: action.error, loading: false };
-//       })
-
-//       .addCase(extraActions.deleteAppointment.pending, (state) => {
-//         state.item = { ...state.item, loading: true };
-//       })
-//       .addCase(extraActions.deleteAppointment.fulfilled, (state, action) => {
-//         state.item = { value: action.payload, loading: false };
-//       })
-//       .addCase(extraActions.deleteAppointment.rejected, (state, action) => {
-//         state.item = { error: action.error, loading: false };
-//       });
-
-//       builder.addDefaultCase((state)=>state)
-//   };
-// }
-
 function createExtraReducers() {
   return (builder) => {
     builder
@@ -172,7 +118,6 @@ function createExtraReducers() {
         state.lists ={value:action.payload};
       })
       .addCase(extraActions.getAllAppointments.rejected, (state, action) => {
-        // state.lists = { error: action.error };
         state.lists =   action.error;
       })
 

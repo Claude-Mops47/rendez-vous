@@ -12,7 +12,7 @@ export const AuthLayout = () =>{
     return (
         <div className='col-sm-8 offset-sm-2 mt-5'>
             <Routes>
-                <Route path='login' element={<LoginPage/>}/>
+                <Route path='/login' element={<LoginPage/>}/>
                 {/* <Route path='add-user' element={<UserAdd/>}/> */}
             </Routes>
         </div>
