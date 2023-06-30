@@ -75,6 +75,7 @@ function createExtraActions() {
   function logout() {
     return createAsyncThunk(`${name}/logout`, function (_, { dispatch }) {
       dispatch(authActions.setAuth(null));
+      apiService.post(`${baseUrl}/logout`)
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       history.navigate("/auth/login");
