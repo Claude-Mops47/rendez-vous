@@ -13,11 +13,16 @@ export const appointmentsReducer = slice.reducer;
 
 function createInitialState() {
   return {
-    lists: { value: null, loading: false, error: null },
-    list: { value: null, loading: false, error: null },
-    item: { value: null, loading: false, error: null },
-    deletedAppointment: { value: null, loading: false, error: null },
-    updatedAppointment: { value: null, loading: false, error: null },
+    // lists: { value: null, loading: false, error: null },
+    lists: null,
+    // list: { value: null, loading: false, error: null },
+    list:  null, 
+    // item: { value: null, loading: false, error: null },
+    item:  null,
+    // deletedAppointment: { value: null, loading: false, error: null },
+    deletedAppointment: null ,
+    // updatedAppointment: { value: null, loading: false, error: null },
+    updatedAppointment: null ,
   };
 }
 
@@ -102,56 +107,104 @@ function createExtraActions() {
   };
 }
 
+// function createExtraReducers() {
+//   return (builder) => {
+//     builder
+
+//       .addCase(extraActions.getAllAppointments.pending, (state) => {
+//         state.lists.loading =true;
+//       })
+//       .addCase(extraActions.getAllAppointments.fulfilled, (state, action) => {
+//         state.lists = { value: action.payload, loading: false };
+
+//         // state.lists.value = action.payload, 
+//         // state.lists.loading = false 
+//       })
+//       .addCase(extraActions.getAllAppointments.rejected, (state) => {
+//         // state.lists = { error: action.error, loading: false };
+
+//         // state.lists.error = action.error;
+//         // state.lists.loading= false ;
+//       })
+
+//       .addCase(extraActions.getAppointmentByUser.pending, (state) => {
+//         state.list = { ...state.list, loading: true };
+//       })
+//       .addCase(extraActions.getAppointmentByUser.fulfilled, (state, action) => {
+//         state.list = { value: action.payload, loading: false };
+//       })
+//       .addCase(extraActions.getAppointmentByUser.rejected, (state, action) => {
+//         state.list = { error: action.error, loading: false };
+//       })
+
+//       .addCase(extraActions.updateAppointment.pending, (state) => {
+//         state.item = { ...state.item, loading: true };
+//       })
+//       .addCase(extraActions.updateAppointment.fulfilled, (state, action) => {
+//         state.item = { value: action.payload, loading: false };
+//       })
+//       .addCase(extraActions.updateAppointment.rejected, (state, action) => {
+//         state.item = { error: action.error, loading: false };
+//       })
+
+//       .addCase(extraActions.deleteAppointment.pending, (state) => {
+//         state.item = { ...state.item, loading: true };
+//       })
+//       .addCase(extraActions.deleteAppointment.fulfilled, (state, action) => {
+//         state.item = { value: action.payload, loading: false };
+//       })
+//       .addCase(extraActions.deleteAppointment.rejected, (state, action) => {
+//         state.item = { error: action.error, loading: false };
+//       });
+
+//       builder.addDefaultCase((state)=>state)
+//   };
+// }
+
 function createExtraReducers() {
   return (builder) => {
     builder
 
       .addCase(extraActions.getAllAppointments.pending, (state) => {
-        state.lists.loading =true;
+        state.lists.loading = true;
       })
       .addCase(extraActions.getAllAppointments.fulfilled, (state, action) => {
-        state.lists = { value: action.payload, loading: false };
-
-        // state.lists.value = action.payload, 
-        // state.lists.loading = false 
+        state.lists ={value:action.payload};
       })
-      .addCase(extraActions.getAllAppointments.rejected, (state) => {
-        // state.lists = { error: action.error, loading: false };
-
-        // state.lists.error = action.error;
-        // state.lists.loading= false ;
+      .addCase(extraActions.getAllAppointments.rejected, (state, action) => {
+        // state.lists = { error: action.error };
+        state.lists =   action.error;
       })
 
       .addCase(extraActions.getAppointmentByUser.pending, (state) => {
-        state.list = { ...state.list, loading: true };
+        state.list = { loading: true };
       })
       .addCase(extraActions.getAppointmentByUser.fulfilled, (state, action) => {
-        state.list = { value: action.payload, loading: false };
+        state.list = {value:action.payload};
       })
       .addCase(extraActions.getAppointmentByUser.rejected, (state, action) => {
-        state.list = { error: action.error, loading: false };
+        state.list = { error: action.error };
       })
 
       .addCase(extraActions.updateAppointment.pending, (state) => {
-        state.item = { ...state.item, loading: true };
+        state.item.loading = true;
       })
       .addCase(extraActions.updateAppointment.fulfilled, (state, action) => {
-        state.item = { value: action.payload, loading: false };
+        state.item = action.payload;
       })
       .addCase(extraActions.updateAppointment.rejected, (state, action) => {
-        state.item = { error: action.error, loading: false };
+        state.item = { error: action.error };
       })
 
       .addCase(extraActions.deleteAppointment.pending, (state) => {
-        state.item = { ...state.item, loading: true };
+        state.item.loading = true;
       })
       .addCase(extraActions.deleteAppointment.fulfilled, (state, action) => {
-        state.item = { value: action.payload, loading: false };
+        state.item = action.payload;
       })
       .addCase(extraActions.deleteAppointment.rejected, (state, action) => {
-        state.item = { error: action.error, loading: false };
-      });
-
-      builder.addDefaultCase((state)=>state)
+        state.item = { error: action.error };
+      })
+      .addDefaultCase((state) => state);
   };
 }

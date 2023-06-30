@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal } from "flowbite-react";
 import AppointmentAdd from "../appointment/AppointmentAdd";
 import { AppointmentList } from "../appointment/AppointmentList";
-import { ThemeContext } from "../components/ThemeProvider";
 
 export default function HomePage() {
   const [openModal, setOpenModal] = useState(false);

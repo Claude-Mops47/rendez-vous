@@ -2,19 +2,19 @@ import { DarkThemeToggle, Navbar, Dropdown, Avatar } from "flowbite-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
+import { Link } from "react-router-dom";
 
 export default function DefaultNavbar() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth?.value);
   const logout = () => dispatch(authActions.logout());
 
-  // const
   if (!auth) return null;
   const role = auth?.role;
 
   return (
     <Navbar fluid rounded>
-      <Navbar.Brand as="a" href="/">
+      <Navbar.Brand as={Link} to="/">
         <img
           alt="Flowbite React Logo"
           className="mr-3 h-6 sm:h-9"
@@ -49,22 +49,22 @@ export default function DefaultNavbar() {
 
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link as="a" href="/">
-          <p>Home</p>
+        <Navbar.Link as={Link} to="/">
+          Home
         </Navbar.Link>
 
         {role === "Admin" && (
           <>
-            <Navbar.Link as="a" href="/manager">
-              <p>Manager</p>
+            <Navbar.Link as={Link} to="/manager">
+              Manager
             </Navbar.Link>
 
-            <Navbar.Link as="a" href="/admin">
-              <p>Admin</p>
+            <Navbar.Link as={Link} to="/admin">
+              Admin
             </Navbar.Link>
           </>
         )}
-        <Navbar.Link as="a" href="/about">
+        <Navbar.Link as={Link} to="/about">
           About
         </Navbar.Link>
       </Navbar.Collapse>

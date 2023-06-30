@@ -25,14 +25,40 @@ const AppointmentAllList = () => {
     setSelectedDate(newDate);
   };
   
+  // const useFetchAppointments = (date) => {
+  //   const dispatch = useDispatch();
+  //   const page = 1;
+  //   const limit = 30;
+  
+  //   useEffect(() => {
+  //     const fetchAppointments = async () => {
+  //       if (date !== "") {
+  //         await dispatch(
+  //           appointmentsActions.getAllAppointments({
+  //             dateBlock: date,
+  //             page: page,
+  //             limit: limit,
+  //           })
+  //         );
+  //       }
+  //     };
+  //     fetchAppointments();
+  //   }, [dispatch, date]);
+  // };
+  
+  // useFetchAppointments(selecteDate);
+
   const useFetchAppointments = (date) => {
     const dispatch = useDispatch();
     const page = 1;
     const limit = 30;
   
     useEffect(() => {
+      let isFetching = false;
+  
       const fetchAppointments = async () => {
         if (date !== "") {
+          isFetching = true;
           await dispatch(
             appointmentsActions.getAllAppointments({
               dateBlock: date,
@@ -40,13 +66,24 @@ const AppointmentAllList = () => {
               limit: limit,
             })
           );
+          isFetching = false;
         }
       };
-      fetchAppointments();
+  
+      if (date !== "") {
+        fetchAppointments();
+      }
+  
+      return () => {
+        if (isFetching) {
+          // dispatch(appointmentsActions.cancelAllPendingAppointmentsRequests());
+        }
+      };
     }, [dispatch, date]);
   };
   
   useFetchAppointments(selecteDate);
+  
 
   const handleAgentFilterChange = (e) => {
     setFilterAgent(e.target.value);
@@ -64,11 +101,11 @@ const AppointmentAllList = () => {
     return true;
   });
 
-  //   function download
+
   const downloadAsCSV = () => {
     const csvContent = [
-      "Agent,Date,Name,Telephone,Address,Date programmation,Commercial",
-      ...(appointments?.value || []).map((item) => {
+      "Agent$Date$Name$Telephone$Address$Date programmation$Commercial",
+      ...appointments?.value.map((item) => {
         const phone = item.phone.join(" / ");
         const agent = item.posted_by?.firstName;
         return [
@@ -79,23 +116,20 @@ const AppointmentAllList = () => {
           item.address,
           dayjs(item.date).format("DD/MM/YY HH:mm"),
           item.commercial,
-        ].join(",");
+        ].join("$");
       }),
     ].join("\n");
-
+  
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-
+  
     const link = document.createElement("a");
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", `${selecteDate}appointments.csv`);
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `${selecteDate}-appointments.csv`;
+    link.click();
+  
+    return blob;
   };
+  
 
   return (
     <>
@@ -228,7 +262,7 @@ const AppointmentAllList = () => {
         </Table>
         {appointments?.loading && (
           <div className="text-center">
-            <Spinner aria-label="Default status example" size="xs" />
+            <Spinner aria-label="Default status example" size="xl" />
           </div>
         )}
       </div>

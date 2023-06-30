@@ -128,7 +128,7 @@ const AppointmentList = ({ refreshList }) => {
         </Table>
         {appointments?.loading && (
           <div className="text-center">
-            <Spinner aria-label="Default status example" size="xs" />
+            <Spinner aria-label="Default status example" size="xl" />
           </div>
         )}
       </div>
