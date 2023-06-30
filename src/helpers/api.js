@@ -8,14 +8,14 @@ const apiService = axios.create({
 
 apiService.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  const sessionCookie = Cookies.get('session')
+  const sessionCookie = Cookies.get("session");
   // const sessionCookie = Cookies.get('connect.sid')
   // const authTokn = sessionCookie.split('.')[0]
 
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
-  if (sessionCookie){
+  if (sessionCookie) {
     // console.log(sessionCookie);
     // config.headers['Cookie'] = sessionCookie
   }
@@ -29,7 +29,9 @@ apiService.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Rediriger vers la page de connexion
-      history.navigate('/auth/login')
+      history.navigate("/auth/login");
+      localStorage.removeItem('user')
+      Cookies.remove("session");
     }
     return Promise.reject(error);
   }
