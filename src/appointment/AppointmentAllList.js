@@ -9,8 +9,8 @@ import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 
 import { DateRangePicker } from "react-date-range";
-import {formatSelectedDate} from '../utils/dateUtils'
-import {downloadAsCSV} from '../utils/csvUtils'
+import { formatSelectedDate } from "../utils/dateUtils";
+import { downloadAsCSV } from "../utils/csvUtils";
 
 const AppointmentAllList = () => {
   const appointments = useSelector((state) => state.appointments?.lists) || [];
@@ -20,7 +20,7 @@ const AppointmentAllList = () => {
 
   const [filterAgent, setFilterAgent] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [titleDate, setTitleDate] = useState(null)
+  const [titleDate, setTitleDate] = useState(null);
   const [selectedDate, setSelectedDate] = useState([
     {
       startDate: new Date(),
@@ -57,21 +57,19 @@ const AppointmentAllList = () => {
     );
   };
 
- useEffect(() => {
-  if (selectedDate.length > 0) {
-    const startDate = formatSelectedDate(selectedDate[0].startDate);
-    const endDate = formatSelectedDate(selectedDate[0].endDate);
+  useEffect(() => {
+    if (selectedDate.length > 0) {
+      const startDate = formatSelectedDate(selectedDate[0].startDate);
+      const endDate = formatSelectedDate(selectedDate[0].endDate);
 
-    fetchAppointments(startDate, endDate);
-    setTitleDate(endDate)
-  }
-}, [dispatch, selectedDate]);
+      fetchAppointments(startDate, endDate);
+      setTitleDate(endDate);
+    }
+  }, [dispatch, selectedDate]);
 
   const handleAgentFilterChange = (e) => {
     setFilterAgent(e.target.value);
   };
-
-
 
   const filteredAppointments = appointments?.value?.filter((item) => {
     if (
@@ -91,7 +89,7 @@ const AppointmentAllList = () => {
         <div className="flex items-center justify-between pb-4">
           <div>
             <Button color="gray" size="xs" onClick={handleButtonClick}>
-            Select a date range
+              Select a date range
             </Button>
             {showDatePicker && (
               <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
@@ -128,7 +126,6 @@ const AppointmentAllList = () => {
                             startDate
                           )} - ${formatSelectedDate(endDate)}`
                         }
-
                       />
                       <Button
                         className="mt-4"
@@ -149,12 +146,14 @@ const AppointmentAllList = () => {
             size="xs"
             color="light"
             ref={downloadRef}
-            onClick={()=>downloadAsCSV(appointments, titleDate)}
+            onClick={() => downloadAsCSV(appointments, titleDate)}
           >
             download as CSV
           </Button>
 
-          <div className="text-gray-600">Count: {appointments.value.length}</div>
+          <div className="text-gray-600">
+            Count: {appointments?.value?.length}
+          </div>
 
           <div className="relative">
             <label htmlFor="search" className="sr-only">
