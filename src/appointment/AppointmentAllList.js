@@ -45,7 +45,7 @@ const AppointmentAllList = () => {
 
   const fetchAppointments = (s_date, e_date) => {
     const page = 1;
-    const limit = 30;
+    const limit = 100;
 
     dispatch(
       appointmentsActions.getAllAppointments({
@@ -67,12 +67,11 @@ const AppointmentAllList = () => {
   }
 }, [dispatch, selectedDate]);
 
-
-
- 
   const handleAgentFilterChange = (e) => {
     setFilterAgent(e.target.value);
   };
+
+
 
   const filteredAppointments = appointments?.value?.filter((item) => {
     if (
@@ -129,6 +128,7 @@ const AppointmentAllList = () => {
                             startDate
                           )} - ${formatSelectedDate(endDate)}`
                         }
+
                       />
                       <Button
                         className="mt-4"
@@ -153,6 +153,8 @@ const AppointmentAllList = () => {
           >
             download as CSV
           </Button>
+
+          <div className="text-gray-600">Count: {appointments.value.length}</div>
 
           <div className="relative">
             <label htmlFor="search" className="sr-only">
