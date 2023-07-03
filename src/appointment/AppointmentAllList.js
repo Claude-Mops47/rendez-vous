@@ -5,63 +5,79 @@ import { Button, Spinner, Table, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+
+import { DateRangePicker } from "react-date-range";
+
 const AppointmentAllList = () => {
-  // Obtention de la date actuelle
-  const currentDate = new Date();
-  // Extraction des composants de la date
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDate.getDate()).padStart(2, "0");
-  // Formation de la date au format "yyyy-MM-dd"
-  const formattedDate = `${year}-${month}-${day}`;
-
-  const [selecteDate, setSelectedDate] = useState(formattedDate);
-  const [filterAgent, setFilterAgent] = useState("");
-
-  const downloadRef = useRef(null);
   const appointments = useSelector((state) => state.appointments?.lists) || [];
+  const downloadRef = useRef(null);
 
-  const handleDateChange = (e) => {
-    const newDate = e.target.value;
-    setSelectedDate(newDate);
+  // console.log(appointments);
+
+  const [filterAgent, setFilterAgent] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "date",
+    },
+  ]);
+
+  const handleDateChange = (ranges) => {
+    // const startDate = formatSelectedDate(ranges.date.startDate);
+    // const endDate = formatSelectedDate(ranges.date.endDate);
+    setSelectedDate([ranges.date]);
+    // fetchAppointments(startDate, endDate);
   };
 
-  const useFetchAppointments = (date) => {
-    const dispatch = useDispatch();
+  const formatSelectedDate = (date) => {
+    if (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+    return "";
+  };
+
+  const handleButtonClick = () => {
+    setShowDatePicker(true);
+  };
+  const handleDatePickerClose = () => {
+    setShowDatePicker(false);
+  };
+
+  const dispatch = useDispatch();
+
+  const fetchAppointments = (s_date, e_date) => {
     const page = 1;
     const limit = 30;
 
-    useEffect(() => {
-      let isFetching = false;
-
-      const fetchAppointments = async () => {
-        if (date !== "") {
-          isFetching = true;
-          await dispatch(
-            appointmentsActions.getAllAppointments({
-              dateBlock: date,
-              page: page,
-              limit: limit,
-            })
-          );
-          isFetching = false;
-        }
-      };
-
-      if (date !== "") {
-        fetchAppointments();
-      }
-
-      return () => {
-        if (isFetching) {
-          // dispatch(appointmentsActions.cancelAllPendingAppointmentsRequests());
-        }
-      };
-    }, [dispatch, date]);
+    dispatch(
+      appointmentsActions.getAllAppointments({
+        startDate: s_date,
+        endDate: e_date,
+        page: page,
+        limit: limit,
+      })
+    );
   };
 
-  useFetchAppointments(selecteDate);
+ useEffect(() => {
+  if (selectedDate.length > 0) {
+    const startDate = formatSelectedDate(selectedDate[0].startDate);
+    const endDate = formatSelectedDate(selectedDate[0].endDate);
 
+    fetchAppointments(startDate, endDate);
+  }
+}, [dispatch, selectedDate]);
+
+
+
+ 
   const handleAgentFilterChange = (e) => {
     setFilterAgent(e.target.value);
   };
@@ -100,7 +116,7 @@ const AppointmentAllList = () => {
 
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.download = `${selecteDate}-appointments.csv`;
+    link.download = `appointments.csv`;
     link.click();
 
     return blob;
@@ -110,12 +126,59 @@ const AppointmentAllList = () => {
     <>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div className="flex items-center justify-between pb-4">
-          <TextInput
-            className=" p-1 pl-10 text-sm text-gray-900  w-80  focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            type="date"
-            value={selecteDate}
-            onChange={handleDateChange}
-          />
+          <div>
+            <Button color="gray" size="xs" onClick={handleButtonClick}>
+            Select a date range
+            </Button>
+            {showDatePicker && (
+              <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+                <div className="modal modal-open">
+                  <div className="modal-box">
+                    <div className="modal-header">
+                      <Button
+                        className="mt-4"
+                        size="xs"
+                        onClick={handleDatePickerClose}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill="#000"
+                            fillRule="evenodd"
+                            d="M12.707 12.707a1 1 0 0 1-1.414 0L8 9.414l-3.293 3.293a1 1 0 0 1-1.414-1.414L6.586 8l-3.293-3.293a1 1 0 0 1 1.414-1.414L8 6.586l3.293-3.293a1 1 0 0 1 1.414 1.414L9.414 8l3.293 3.293a1 1 0 0 1 0 1.414z"
+                          />
+                        </svg>
+                      </Button>
+                    </div>
+                    <div className="modal-content">
+                      <DateRangePicker
+                        ranges={selectedDate}
+                        onChange={handleDateChange}
+                        showSelectionPreview={true}
+                        moveRangeOnFirstSelection={false}
+                        renderStaticRangeLabel={({ startDate, endDate }) =>
+                          `${formatSelectedDate(
+                            startDate
+                          )} - ${formatSelectedDate(endDate)}`
+                        }
+                      />
+                      <Button
+                        className="mt-4"
+                        size="xs"
+                        onClick={handleDatePickerClose}
+                      >
+                        Fermer
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           <Button
             type="button"
@@ -225,7 +288,9 @@ const AppointmentAllList = () => {
                     </span>
                   </Table.Cell>
                   <Table.Cell className="fornt-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                    <Link to={`../appointments/edit/${appointment._id}`}>Edit</Link>
+                    <Link to={`../appointments/edit/${appointment._id}`}>
+                      Edit
+                    </Link>
                   </Table.Cell>
                 </Table.Row>
               ))}

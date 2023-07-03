@@ -13,15 +13,10 @@ export const appointmentsReducer = slice.reducer;
 
 function createInitialState() {
   return {
-    // lists: { value: null, loading: false, error: null },
     lists: null,
-    // list: { value: null, loading: false, error: null },
     list:  null, 
-    // item: { value: null, loading: false, error: null },
     item:  null,
-    // deletedAppointment: { value: null, loading: false, error: null },
     deletedAppointment: null ,
-    // updatedAppointment: { value: null, loading: false, error: null },
     updatedAppointment: null ,
   };
 }
@@ -32,11 +27,11 @@ function createExtraActions() {
   return {
     getAllAppointments: createAsyncThunk(
       `${name}/getAllAppointments`,
-      async ({ dateBlock, page, limit }, { dispatch }) => {
+      async ({ startDate,endDate, page, limit }, { dispatch }) => {
         dispatch(alertActions.clear());
         try {
           const response = await apiService.get(
-            `${baseUrl}?date=${dateBlock}&page=${page}&limit=${limit}`
+            `${baseUrl}?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
           );
           return response.data;
         } catch (error) {
