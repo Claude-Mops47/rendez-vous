@@ -9,6 +9,8 @@ import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 
 import { DateRangePicker } from "react-date-range";
+import {formatSelectedDate} from '../utils/dateUtils'
+import {downloadAsCSV} from '../utils/csvUtils'
 
 const AppointmentAllList = () => {
   const appointments = useSelector((state) => state.appointments?.lists) || [];
@@ -18,6 +20,7 @@ const AppointmentAllList = () => {
 
   const [filterAgent, setFilterAgent] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [titleDate, setTitleDate] = useState(null)
   const [selectedDate, setSelectedDate] = useState([
     {
       startDate: new Date(),
@@ -27,25 +30,13 @@ const AppointmentAllList = () => {
   ]);
 
   const handleDateChange = (ranges) => {
-    // const startDate = formatSelectedDate(ranges.date.startDate);
-    // const endDate = formatSelectedDate(ranges.date.endDate);
     setSelectedDate([ranges.date]);
-    // fetchAppointments(startDate, endDate);
-  };
-
-  const formatSelectedDate = (date) => {
-    if (date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    }
-    return "";
   };
 
   const handleButtonClick = () => {
     setShowDatePicker(true);
   };
+
   const handleDatePickerClose = () => {
     setShowDatePicker(false);
   };
@@ -72,6 +63,7 @@ const AppointmentAllList = () => {
     const endDate = formatSelectedDate(selectedDate[0].endDate);
 
     fetchAppointments(startDate, endDate);
+    setTitleDate(endDate)
   }
 }, [dispatch, selectedDate]);
 
@@ -93,34 +85,6 @@ const AppointmentAllList = () => {
     }
     return true;
   });
-
-  const downloadAsCSV = () => {
-    const csvContent = [
-      "Agent$Date$Name$Telephone$Address$Date programmation$Commercial",
-      ...appointments?.value.map((item) => {
-        const phone = item.phone.join(" / ");
-        const agent = item.posted_by?.firstName;
-        return [
-          agent,
-          dayjs(item.createdAt).format("DD/MM/YY HH:mm"),
-          item.name,
-          phone,
-          item.address,
-          dayjs(item.date).format("DD/MM/YY HH:mm"),
-          item.commercial,
-        ].join("$");
-      }),
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `appointments.csv`;
-    link.click();
-
-    return blob;
-  };
 
   return (
     <>
@@ -185,7 +149,7 @@ const AppointmentAllList = () => {
             size="xs"
             color="light"
             ref={downloadRef}
-            onClick={downloadAsCSV}
+            onClick={()=>downloadAsCSV(appointments, titleDate)}
           >
             download as CSV
           </Button>
