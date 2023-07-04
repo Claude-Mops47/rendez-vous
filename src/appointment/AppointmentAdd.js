@@ -49,13 +49,11 @@ export default function AppointmentAdd({ closeModal }) {
     },
   };
 
-  const { register, handleSubmit, formState, watch, reset } =
-    useForm(formOptions);
+  const { register, handleSubmit, formState, watch, reset } = useForm(formOptions);
   const { isSubmitting } = formState;
 
   const onSubmit = async (data) => {
-    const { phoneFixe, phoneMobile, name, comment, commercial, date, address } =
-      data;
+    const { phoneFixe, phoneMobile, name, comment, commercial, date, address } = data;
     const phone = [];
     if(phoneFixe && phoneFixe.length > 0){
       phone.push(phoneFixe)

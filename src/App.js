@@ -19,6 +19,7 @@ import { AuthLayout } from "./auth/AuthLayout";
 import { DefaultAlert } from "./components/Alert";
 import { history } from "./helpers";
 import { useSelector } from "react-redux";
+import AppointmentEdit from "./appointment/AppointmentEdit";
 
 function PrivateRoute({ role, children }) {
   const auth = useSelector((state) => state.auth);
@@ -54,6 +55,7 @@ function App() {
             {/* Manager routes */}
             <Route element={<PrivateRoute role="Manager" />}>
               <Route path="/manager" element={<ManagerPage />} />
+              <Route path="/appointments/edit/:id" element={<AppointmentEdit/>}/>
             </Route>
 
             {/* User routes */}
