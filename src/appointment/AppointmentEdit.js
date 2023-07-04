@@ -25,9 +25,9 @@ const AppointmentEdit = () => {
   useEffect(() => {
     dispatch(appointmentsActions.getAppointmentById(appointmentId)).unwrap()
     .then((appointment)=>{
-      appointmentForm.setValues({
-        ...appointment
-      })
+      // appointmentForm.setValues({
+        // ...appointment
+      // })
     });
   }, [dispatch, appointmentId]);
 
