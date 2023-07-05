@@ -50,16 +50,16 @@ function createExtraActions() {
             password,
           });
 
-          const { user, token } = response.data;
+          const { user, token, refresh } = response.data;
 
           dispatch(authActions.setAuth(user));
           dispatch(authActions.setToken(token));
 
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("token", token);
-    
 
-          sessionCookie.set('session', token,{expires: 7, sercure: true })
+          sessionCookie.set("refreshToken", refresh);
+          sessionCookie.set("session", token, { expires: 7, sercure: true });
 
           const { from } = history.location.state || {
             from: { pathname: "/" },
@@ -75,7 +75,7 @@ function createExtraActions() {
   function logout() {
     return createAsyncThunk(`${name}/logout`, function (_, { dispatch }) {
       dispatch(authActions.setAuth(null));
-      apiService.post(`${baseUrl}/logout`)
+      apiService.post(`${baseUrl}/logout`);
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       history.navigate("/auth/login");
