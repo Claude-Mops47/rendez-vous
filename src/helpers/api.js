@@ -1,3 +1,6 @@
+import { store } from "../store";
+import { authActions } from "../store";
+
 import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "./history";
@@ -9,19 +12,16 @@ const apiService = axios.create({
 apiService.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   const sessionCookie = Cookies.get("session");
-  const refreshToken = Cookies.get("refreshToken");
-  // const authTokn = sessionCookie.split('.')[0]
-  console.log(refreshToken);
+  const refreshToken = localStorage.getItem("refresh");
 
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
   if (refreshToken) {
-    config.headers['X-Refresh-Token'] = refreshToken
+    config.headers["X-Refresh-Token"] = refreshToken;
   }
   return config;
 });
-
 
 apiService.interceptors.response.use(
   (response) => {
@@ -29,8 +29,11 @@ apiService.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      console.log(error);
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       try {
         const response = await axios.post(
@@ -38,16 +41,18 @@ apiService.interceptors.response.use(
           {},
           { withCredentials: true }
         );
-        const { accessToken } = response.data;
-        localStorage.setItem("token", accessToken);
-        originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+        const { token } = response.data;
+        localStorage.setItem("token", token);
+        originalRequest.headers["Authorization"] = `Bearer ${token}`;
         return axios(originalRequest);
       } catch (error) {
-        // Rediriger vers la page de connexion
-        history.navigate("/auth/login");
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        Cookies.remove("refreshToken");
+        if (error.response && error.response.status === 403) {
+          store.dispatch(authActions.logout());
+          history.navigate("/auth/login");
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          Cookies.remove("refreshToken");
+        }
         return Promise.reject(error);
       }
     }

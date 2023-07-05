@@ -1,15 +1,15 @@
 
-// export const history ={
-//     navigate: null,
-//     location: null
-// }
+export const history ={
+    navigate: null,
+    location: null
+}
 
-import { createBrowserHistory } from 'history';
+// import { createBrowserHistory } from 'history';
 
-const browserHistory = createBrowserHistory();
+// const browserHistory = createBrowserHistory();
 
-export const history = {
-  ...browserHistory,
-  navigate: browserHistory.push,
-  location: browserHistory.location
-};
+// export const history = {
+//   ...browserHistory,
+//   navigate: browserHistory.push,
+//   location: browserHistory.location
+// };
